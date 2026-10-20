@@ -86,9 +86,8 @@ for element in list_e : # vs for( int i = 0 ;  i < list_e.size ; i++ ){ } ...
 for char in "안녕하세요" : # 안녕하세요가 반복되는 이유는 문자열도 리스트/배열임. 문자1개 = 리터럴 리터럴이 모여서 리스트
     print ( char )
 
+# 1. 자바 구구단 작성
+# 2. 파이썬 구구단 작성
 
-for ( int x = 1 ; x<=9 ; x++ ){
-    for (int y = 1; y<= 9; y++){
-        sy(x + "x" + i "=" + (x*y))
-    }
-}
+# 전개연산자 , 리스트명 앞에 * 붙인다.
+print( *list_e )
