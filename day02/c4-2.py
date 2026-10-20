@@ -33,3 +33,36 @@ for key in dict_a: # dict_a의 key를 꺼내서 key에 넣음
     print(dict_a.get(key)) # 방법1      .get(키) -> 그 키의 값을 꺼냄
     print(dict_a[key]) # 방법2         딕셔너리[키] -> 그 키의 값을 꺼냄
 
+#228p 1번
+# dict_a = { 'name' : '구름' }
+# del dict_a['name']
+
+
+#228p 2번
+
+pets = [
+    {"name" : "구름" , "age" : 5},
+    {"name" : "초코" , "age" : 3},
+    {"name" : "아지" , "age" : 1},
+    {"name" : "호랑이" , "age" : 1}
+]
+print("# 우리 동네 애완 동물들 ")
+for pet in pets:
+    age = pet['age']
+    strage = str(age)
+    print ( pet['name'] + " " + strage+"살")
+
+#228p 3번
+numbers = [ 1,3,3,4,5,6,7,7,8,1,4,5,9,6,6,6,7,3,2,1 ]
+counter = { }
+
+for number in numbers :
+    if number in counter :
+        counter[number] += 1
+    else :
+        counter[number] = 1
+
+print(counter)
+
+
+#228p 4번

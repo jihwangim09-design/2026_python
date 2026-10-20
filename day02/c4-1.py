@@ -91,3 +91,45 @@ for char in "안녕하세요" : # 안녕하세요가 반복되는 이유는 문�
 
 # 전개연산자 , 리스트명 앞에 * 붙인다.
 print( *list_e )
+
+#.213p 1번
+
+list_a = [0,1,2,3,4,5,6,7]
+
+list_a.extend(list_a) # extend() --> 한번에 여러 개의 요소를 추가.
+print(list_a)
+list_a.append(10)
+print(list_a)
+list_a.insert(3,0)
+print(list_a)
+list_a.remove(3)
+print(list_a)
+list_a.pop(3)
+print(list_a)
+list_a.clear()
+print(list_a)
+
+#.213p 2번
+
+numbers = [273 , 103, 5, 32 , 65, 9, 72, 800, 99 ]
+
+for number in numbers:
+    if number > 100 :
+        print("- 100 이상의 수: " , number )
+
+
+#.213p 3번
+
+numbers = [273 , 103 , 5, 32 ,65 , 9 , 72 , 800 ,99]
+
+for number in numbers:
+    if number % 2 == 1 :
+        print( number,"는 홀수입니다")
+    else:
+        print( number,"는 짝수입니다")
+
+#for number in numbers:
+#   strnum = str(number)
+#   print(number,"는",len(strnum),"자릿수입니다.")
+
+        
