@@ -132,4 +132,12 @@ for number in numbers:
 #   strnum = str(number)
 #   print(number,"는",len(strnum),"자릿수입니다.")
 
-        
+#.213p 4번
+
+numbers = [1,2,3,4,5,6,7,8,9]
+output = [[] , [] ,[]]
+
+for number in numbers:
+    output[].append(number)
+
+print(output)
