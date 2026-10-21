@@ -34,8 +34,8 @@ for key in dict_a: # dict_a의 key를 꺼내서 key에 넣음
     print(dict_a[key]) # 방법2         딕셔너리[키] -> 그 키의 값을 꺼냄
 
 #228p 1번
-# dict_a = { 'name' : '구름' }
-# del dict_a['name']
+dict_a = {"name" : "구름"}
+del dict_a["name"]
 
 
 #228p 2번
@@ -48,9 +48,9 @@ pets = [
 ]
 print("# 우리 동네 애완 동물들 ")
 for pet in pets:
-    age = pet['age']
+    age = pet["age"]
     strage = str(age)
-    print ( pet['name'] + " " + strage+"살")
+    print ( pet["name"] + " " + strage+"살")
 
 #228p 3번
 numbers = [ 1,3,3,4,5,6,7,7,8,1,4,5,9,6,6,6,7,3,2,1 ]
@@ -66,3 +66,24 @@ print(counter)
 
 
 #228p 4번
+
+character = {
+    "name" : "기사",
+    "level" : 12,
+    "items": {
+        "sword": "불꽃의 검",
+        "armor": "풀플레이트"
+    },
+    "skill": ["베기", "세게 베기", "아주 세게 베기"]
+}
+
+for key in character:
+    value =  character[key]
+    if type(value) is dict:
+        for a in value:
+            print(a, ":", value[a])
+    elif type(value) is list:
+        for b in value:
+            print(key, ":", b)
+    else :
+        print(key, ":" , value)
