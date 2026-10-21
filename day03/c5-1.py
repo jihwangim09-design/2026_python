@@ -143,3 +143,11 @@ def sum_all2(start=0 , end=100, step=1):
 print("A." , sum_all2(0,100,10))
 print("B." , sum_all2(end=100))
 print("C." , sum_all2(end=100, step=2))
+
+#p.290 2번
+def mul(*values):
+    output = 1
+    for i in values:
+        output = output * i
+    return output
+print(mul(5,7,9,10))
