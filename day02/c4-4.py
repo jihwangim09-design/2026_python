@@ -61,3 +61,19 @@ print( "\n".join( ["안녕하세요1" , "안녕하세요2" ] ) )
 print( "-".join("유재석") ) # 유-재-석 문자열에 join이 가능한 이유는 
 # 문자열도 리스트라서 배열로 사용할수있음
 
+#p.266 2번
+
+
+# [1단계] 조건에 맞는 숫자만 골라서 리스트 만들기 (리스트 내포)
+# for i in range(1, 101) : i에 1 ~ 100 을 하나씩 넣으며 반복 (끝값 101은 미포함)
+# "{:b}".format(i) : i를 2진수 모양의 문자열로 바꾼다 (b = binary) 예) 5 → "101"
+# .count("0") : 그 문자열 안에 "0" 글자가 몇 개 있는지 센다 예) "101" → 1
+# == 1 : 0의 개수가 딱 1개면 True → 맨 앞의 i를 리스트에 담는다
+# 줄이 바뀌어도 대괄호 [ ] 안이라서 한 문장으로 이어서 읽는다
+# 풀어 쓰면 : output = [] → for → if → output.append(i)
+output = [i for i in range(1 ,100)
+        if "{:b}".format(i).count("0") == 1 ]
+
+for i in output:
+    print("{} : {}" .format(i, "{:b}".format(i)))
+print("합계:" , sum(output))
