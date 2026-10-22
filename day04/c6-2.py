@@ -5,16 +5,30 @@
 # ValueError, IndexError 대문자인 이유는 클래스라서 e는 변수라서 소문자
 # 그외 모든 예외 처리 : 여러개 except 에서 Exception은 항상 마지막에 위치
 # 주의할점 : Exception 앞에 위치하면 아래 except 예외가 작동 안함  -> 상속개념
+# raise : 강제로 예외발생 , 주로 CRUD 실패500  의미
 # p.384
 list_number = [ 52, 273, 32, 72 , 100 ]
 try:
     number_input = int( input('정수입력: ')) # 타입 예외
     print( list_number[ number_input ])     # 인덱스 예외
-except Exception as e :               # [1]
+    raise NotImplementedError
+    # java : throws new 예외클래스()
+except ValueError as e :              # 타입변환 예외
     print( e )
-except ValueError as e :               # 타입변환 예외
+except IndexError as e :              # 인덱스 예외
     print( e )
-except IndexError as e :               # 인덱스 예외
+except Exception as e :               # 그외 (최상위) 예외 항상 마지막
     print( e )
-except IndexError as e :               # 인덱스 예외
-    print( e )
+
+# 
+a = 10   # 전역스택
+def 함수 ( ) :
+    # global a
+    # 단순 전역변수 호출이면 global 생략가능,
+    # 전역변수 수정하면 global 필수
+    global a
+    a = a + 1 #UnboundLocalError
+    print(a) # global 없어도 전역스택 가능
+    b = 20   # 함수스택
+
+함수( )
