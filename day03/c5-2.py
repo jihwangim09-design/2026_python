@@ -46,3 +46,27 @@ def 구구단(단=2 , 곱=1) :
     print(단 * 곱)
     구구단(단 , 곱 + 1) # 곱 올리기
 구구단( )
+
+# p.315 1번
+seatmin = 2
+maxseatmin = 10
+allmin = 100
+memo = {}
+
+def const_seat(남은사람, 직전인원):
+    key = str([남은사람, 직전인원])
+    # 종료 조건
+    if key in memo:
+        return memo[key]
+    if 남은사람 < 0:
+        return 0
+    if 남은사람 == 0:
+        return 1
+    else :
+        output = 0
+        for i in range(직전인원, maxseatmin + 1):
+            output += const_seat(남은사람 - i , i)
+        memo[key] = output
+        return output
+
+print(const_seat(allmin, seatmin))
