@@ -67,3 +67,13 @@ x = np.array( [1.0 , 2.0 , 3.0] , dtype=np.float32 )
 print(x.dtype)
 x = np.array( [True, False , True ] , dtype=np.bool)
 print(x.dtype)
+x = np.array( ['apple' , 'banana' , 'cherry' ] , dtype=np.bytes_ )
+print( x.dtype)
+
+
+# 10] 타입변환 , .astype( np.새로운타입 )
+x = np.array( [1.5 ,2.5, 3.5] , dtype=np.float32)
+y = x.astype( np.int32 ) 
+print(y)
+
+# * 타입 지정한 이유 : 1] 메모리 효율성/속도 2] 텐서플로우/파이토치 라이브러리
