@@ -59,7 +59,11 @@ print( x.size) # 요소/자료 개수 # 6
 print( x.ndim) # 차원수 # 3
 
 # 9] 배열의 데이터 삽입 , np.array(리스트/튜플 , dtpye=np.타입명)
-# np.타입명(비트수)
+# np.타입명(비트수) , 32bit --> 4byte
+# np.bool_ : 언더바 주의( 파이썬 bool vs 넘파일 bool_)
 x = np.array( [1,2,3] , dtype=np.int32) 
 print(x.dtype)
 x = np.array( [1.0 , 2.0 , 3.0] , dtype=np.float32 )
+print(x.dtype)
+x = np.array( [True, False , True ] , dtype=np.bool)
+print(x.dtype)
