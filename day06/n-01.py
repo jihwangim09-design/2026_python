@@ -44,3 +44,22 @@ print(x) # [0.   0.25 0.5  0.75 1.  ]
 # * 넘파이는 리스트 또는 튜플 형식의 자료들을 넘파이 타입으로 변환 가능
 # x = np.array(( 2,3 ) )
 # print(x)
+
+# 6] 배열 길이 확인
+x = np.array( [ [1,2,3] , [4,5,6] ] ) #2차원
+print( x.shape ) # (2, 3) # 2행 3열
+
+# 7] 배열 타입 확인
+x = np.array( [1.0 , 2.0 , 3.0] )
+print(x.dtype) # float64 # int64
+
+# 8] 배열 차원 개수 확인
+x = np.array([ [ [1],[2] ] , [ [2],[3] ], [ [3],[4]] ])
+print( x.size) # 요소/자료 개수 # 6
+print( x.ndim) # 차원수 # 3
+
+# 9] 배열의 데이터 삽입 , np.array(리스트/튜플 , dtpye=np.타입명)
+# np.타입명(비트수)
+x = np.array( [1,2,3] , dtype=np.int32) 
+print(x.dtype)
+x = np.array( [1.0 , 2.0 , 3.0] , dtype=np.float32 )
