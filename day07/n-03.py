@@ -19,7 +19,7 @@ print(z)
 z = np.concatenate( (x,y) , axis = 1) # hstack이랑 결과 똑같음 가로방향
 print(z)
 
-# 3] 정렬 , np.sort(배열) : 오름차순 , [ : : -1 ] 내림챃순
+# 3] 정렬 , np.sort(배열) : 오름차순 , [ : : -1 ] 내림차순
 x = np.array( [3,1,4,2,5] )
 print( np.sort(x)) # [1 2 3 4 5]
 print( np.sort(x)[ : : -1]) # [5 4 3 2 1]
