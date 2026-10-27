@@ -89,4 +89,5 @@ order = order[::-1]
 vvip_sorted = vvip_rows[order]
 print("VVIP 상위 5명: " , vvip_sorted[:5])
 
+# 슬라이싱한 결과가 배열이면서 특정 인덱스의 요소값 수정시 원본 값이 같이 수정됨
 # top5 = vvip_rows[np.argsort(vvip_rows[:, 4])[::-1]][:5]
