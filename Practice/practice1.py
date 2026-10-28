@@ -1,31 +1,59 @@
+import numpy as np
+
 # Python NumPy Practice1
 
 # [문제 1]
 # 1. 0부터 18까지 2씩 증가하는 1차원 정수 배열 arr_step을 np.arange로 생성하시오.
 # 2. 0.0부터 1.0 사이를 균등하게 5개 구간으로 나눈 배열 arr_lin을 np.linspace로 생성하시오.
+arr_step = np.arange(0 , 19 , 2)
+print(arr_step) 
+arr_lin = np.linspace(0, 1 ,5)
+print(arr_lin) 
 
 # [문제 2]
 # 1. 모든 요소가 0으로 채워진 2행 3열의 배열 zeros_arr을 생성하시오.
 # 2. 모든 요소가 1로 채워진 2행 3열의 배열 ones_arr을 생성하시오.
 # 3. 생성한 zeros_arr의 모양(shape)과 전체 요소 개수(size)를 각각 출력하시오.
+zeros_arr = np.zeros((2,3))
+print(zeros_arr)
+ones_arr = np.ones((2,3))
+print(ones_arr)
+print(zeros_arr.shape)
+print(zeros_arr.size)
 
 # [문제 3]
 # 1. 문자열 리스트 ['python', 'numpy']를 np.bytes_ 타입의 배열로 생성하여 dtype을 확인하시오.
 # 2. 실수형 배열 arr_float = np.array([1.7, 2.4, 3.9], dtype=np.float32)을 np.int32 타입으로 형변환하여 소수점이 절삭된 새 배열을 출력하시오.
+q = np.array(['python', 'numpy'], dtype=np.bytes_)
+print(q.dtype)
+arr_float = np.array([1.7, 2.4, 3.9], dtype=np.float32)
+w = arr_float.astype(np.int32)
+print(w)
+
 
 # [문제 4]
 # 2차원 배열 arr = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])에 대해:
 # 1. 1행 2열의 값과 음수 인덱스만을 사용한 마지막 행 마지막 열의 값을 각각 추출하시오.
 # 2. 배열 내에서 50을 초과하는 요소들만 불리언 인덱싱으로 추출하여 1차원 배열로 출력하시오.
+arr = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
+print( arr[1,2])
+print( arr[-1,-1])
+print( arr > 50)
+
 
 # [문제 5]
 # 동일한 2차원 배열 arr = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]]) 기준으로:
 # 1. 모든 행의 1번 열 데이터([20, 50, 80])와 2번 행의 모든 열 데이터([70, 80, 90])를 각각 슬라이싱하시오.
 # 2. 0번 인덱스 행과 2번 인덱스 행 전체를 인덱싱으로 한 번에 추출하시오.
+arr = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
+print( arr[ : , 1])
+print( arr[ 2 , :])
+print( arr[[ 0, 2 ] , :])
 
 # [문제 6]
 # 배열 x = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])에서
 # 상단 1개 행과 우측 3개 열이 교차하는 서브 배열 을 2차원 슬라이싱 문법([행_슬라이싱, 열_슬라이싱])으로 추출하시오.
+x = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
 # [문제 7]
 # 배열 x = np.array([10, 20, 30, 40, 50])에 대해:
