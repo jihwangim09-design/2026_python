@@ -145,11 +145,56 @@ print( df[(df['score'] > 70) | cont])
 # C  cat   40  incheon     95
 
 # 필터링 이용하여 새로운 열
+df['passed'] = False
 df.loc[ df['score'] > 70 , 'passed'] = True
 print(df)
-#     name  age     city  score passed
-# A  apple   31    seoul     50    NaN
-# B    bee   70    busan     60    NaN
-# C    cat   40  incheon     95   True
+#     name  age     city  score   passed
+# A  apple   31    seoul     50    False
+# B    bee   70    busan     60    False
+# C    cat   40  incheon     95    True
 
+# 12] 컬럼명 변경, df.rename=(columns= {'기존열이름' : '새로운이름'}) 
+df = df.rename( columns= {'city' : '도시' , 'age' : '나이'})
+print(df)
+#    name  나이     도시  score  passed
+# A  apple  31    seoul     50   False
+# B    bee  70    busan     60   False
+# C    cat  40  incheon     95    True
 
+# 13] 집계 , df.describe() , df['열이름'].통계함수()
+print( df.describe() )
+#              나이     score
+# count   3.000000   3.000000
+# mean   47.000000  68.333333
+# std    20.420578  23.629078
+# min    31.000000  50.000000
+# 25%    35.500000  55.000000
+# 50%    40.000000  60.000000
+# 75%    55.000000  77.500000
+# max    70.000000  95.000000
+print( df['나이'].sum()) # 141
+print( df['passed'].value_counts() ) # 자료 빈도 수
+# passed
+# False    2
+# True     1
+
+# 14] 합치기/병합
+df1 = pd.DataFrame({'ID': [1, 2, 3], 'Score': [90, 80, 85]})
+df2 = pd.DataFrame({'ID': [4, 5, 6], 'Score': [75, 95, 88]})
+# 세로 연결 pd.concat( [df1 , df1] , axis = 0 , ignore_index=True)
+new_df = pd.concat([df1,df2] , axis=0 , ignore_index=True) # ignore_index=True : 원래 행 번호(인덱스)를 무시하고 0부터 새로 매긴다(기본값은 False)
+print(new_df)
+#    ID  Score
+# 0   1     90
+# 1   2     80
+# 2   3     85
+# 0   4     75
+# 1   5     95
+# 2   6     88
+
+new_df = pd.concat( [df1,df2] , axis=1)
+print(new_df)
+#    ID  Score  ID  Score
+# 0   1     90   4     75
+# 1   2     80   5     95
+# 2   3     85   6     88
