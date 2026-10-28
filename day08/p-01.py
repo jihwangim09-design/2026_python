@@ -41,6 +41,53 @@ df = pd.DataFrame(
     )
 print(df)
 
-# 매크로(프로그램) -> RPA
+# 매크로(프로그램) -> RPA(사무 업무 / 파이썬)
 
 
+# 5] 주요 속성
+print( df.shape ) # 행/열 크기 # (3,3)
+print( df.columns ) # 컬럼 목록 Index(['name' , 'age' , 'city'], dtype='str')
+print( df.index ) # 인덱스 목록 Index(['A' , 'B' , 'C'] , dtype='str')
+print( df.values ) # 값만 2차원 리스트로 추출
+# [['ant' '25' 'seoul']
+# ['bee' '30' 'busan']
+# ['cat' '35' 'incheon']]
+print( df.head(2)) # 상위 n개 만 반환
+# A  ant  25  seoul
+# B  bee  30  busan
+print( df.tail(2)) # 하위 n개 만 반환
+# B  bee  30    busan
+# C  cat  35  incheon
+df.info() # 컬럼이름 , 결측치, 타입 확인
+# <class 'pandas.DataFrame'>
+# Index: 3 entries, A to C
+# Data columns (total 3 columns):
+#   Column  Non-Null Count  Dtype
+# ---  ------  --------------  -----
+# 0   name    3 non-null      str  
+# 1   age     3 non-null      str  
+# 2   city    3 non-null      str  
+# dtypes: str(3)
+# memory usage: 96.0+ bytes
+
+# 6] 인덱싱 = df.iloc[행인덱스, 열인덱스] /슬라이싱
+print(df.iloc[1]) # 1행
+# memory usage: 96.0+ bytes
+# name      bee
+# age        30
+# city    busan
+# Name: B, dtype: str
+print(df.iloc[ 1 , 2 ]) # busan
+print(df.loc['B']) # 1행 = B행
+print(df.loc['B' , 'city']) # B행 city열 # busan
+
+# 7] 슬라이싱 , [시작인덱스:끝인덱스]
+print( df.iloc [0:2 , 0:1])
+#    name
+# A  ant
+# B  bee
+print( df.loc['A' : 'C' , 'name' : 'age'])
+#   name age
+# A  ant  25
+# B  bee  30
+# C  cat  35
