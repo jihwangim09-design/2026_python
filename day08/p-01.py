@@ -91,3 +91,65 @@ print( df.loc['A' : 'C' , 'name' : 'age'])
 # A  ant  25
 # B  bee  30
 # C  cat  35
+
+# 8] 열 추가 , df[새로운열] = 새로운값
+df['score'] = [100 , 80 , 95]
+print(df)
+#   name age     city  score
+# A  ant  25    seoul    100
+# B  bee  30    busan     80
+# C  cat  35  incheon     95
+
+# 9] 값 수정 , df[수정할열] = 새로운값
+df['age'] = [31, 52, 40]
+print(df)
+#   name  age     city  score
+# A  ant   31    seoul    100
+# B  bee   52    busan     80
+# C  cat   40  incheon     95
+df.loc['B' , 'age'] = 70 # B행의age열을 수정
+print(df)
+#   name  age     city  score
+# A  ant   31    seoul    100
+# B  bee   70    busan     80
+# C  cat   40  incheon     95
+df.iloc[0,0] = 'apple'
+print(df)
+#     name  age     city  score
+# A  apple   31    seoul    100
+# B    bee   70    busan     80
+# C    cat   40  incheon     95
+
+# 10] 여러개 수정 
+df.loc[ ['A','B'] , 'score'] = [50,60]
+print(df)
+#     name  age     city  score
+# A  apple   31    seoul     50
+# B    bee   70    busan     60
+# C    cat   40  incheon     95
+# 11] 필터링 조건
+print(df['score'] > 70)
+# A    False
+# B    False
+# C     True
+print(df[df['score'] > 70]) # 원본에서 조건이 True것만 전체가 나온다 / 조건전체에 [] 로 감싸줘야함 
+#   name  age     city  score
+# C  cat   40  incheon     95
+cont = df['age'] >= 40
+print( df[ (df['score'] > 70) & cont] )
+#   name  age     city  score
+# C  cat   40  incheon     95
+print( df[(df['score'] > 70) | cont])
+#   name  age     city  score
+# B  bee   70    busan     60
+# C  cat   40  incheon     95
+
+# 필터링 이용하여 새로운 열
+df.loc[ df['score'] > 70 , 'passed'] = True
+print(df)
+#     name  age     city  score passed
+# A  apple   31    seoul     50    NaN
+# B    bee   70    busan     60    NaN
+# C    cat   40  incheon     95   True
+
+
