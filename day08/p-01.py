@@ -198,3 +198,62 @@ print(new_df)
 # 0   1     90   4     75
 # 1   2     80   5     95
 # 2   3     85   6     88
+
+# 병합 : 교집합(공통컬럼) , pd.merge( df1 ,df2 , on = '공통컬럼명' , how=방향 )
+df_info = pd.DataFrame({'ID': [1, 2, 3], 'Name': ['Ant', 'Bee', 'Cat']})
+df_score = pd.DataFrame({'ID': [2, 3, 4], 'Score': [88, 92, 85]})
+
+
+new_df = pd.merge( df_info ,df_score, on = 'ID' , how='inner' ) # inner = 교집합
+print(new_df)
+#    ID Name  Score
+# 0   2  Bee     88
+# 1   3  Cat     92
+new_df = pd.merge( df_info ,df_score, on = 'ID' , how='outer' ) # outer = 교집합(한쪽에만 있는 ID도 전부 남긴다)
+print(new_df) # Nan : 정의가 없는 자료 # 숫자가 아니다.
+#    ID Name  Score
+# 0   1  Ant    NaN
+# 1   2  Bee   88.0
+# 2   3  Cat   92.0
+# 3   4  NaN   85.0
+
+# 15] 정렬 , df.sort
+df = pd.DataFrame({
+  'name': ['Ant', 'Bee', 'Cat', 'Dog'],
+  'age': [27, 27, 22, 32],
+  'score': [88, 95, 85, 90]
+})
+new_df = df.sort_values( by = 'age' , ascending=True ) # ascending=True는 기본값은 True 오름차순
+print( new_df )
+#   name  age  score
+# 2  Cat   22     85
+# 0  Ant   27     88
+# 1  Bee   27     95
+# 3  Dog   32     90
+
+new_df = df.sort_values( by = 'age' , ascending=False ) # False는 내림차순
+print( new_df )
+#  name  age  score
+# 3  Dog   32     90
+# 0  Ant   27     88
+# 1  Bee   27     95
+# 2  Cat   22     85
+
+# 다중정렬은 [ ] 리스트 사용 , age기준으로 1차 정렬 후 동일한 age끼리 score기준으로 2차정렬
+new_df = df.sort_values( by = ['age' , 'score'] , ascending=[True,False])
+print(new_df)
+#   name  age  score
+# 2  Cat   22     85
+# 1  Bee   27     95
+# 0  Ant   27     88
+# 3  Dog   32     90
+
+# 컬럼명도 정렬이 가능하다. axis = 0행/1열
+new_df = df.sort_index( axis=1 , ascending= True )
+print(new_df)
+# 문자열은 사전순(알파벳 순서)로 정렬
+#    age name  score
+# 0   27  Ant     88
+# 1   27  Bee     95
+# 2   22  Cat     85
+# 3   32  Dog     90
