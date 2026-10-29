@@ -53,3 +53,7 @@ plt.show()
 sns.scatterplot( data=df , x='나이' , y='소득', hue='이탈여부')
 plt.title("나이 vs 소득 산정도")
 plt.show()
+
+# 5] 페어플롯
+sns.pairplot( data=df , hue="이탈여부")
+plt.show()
