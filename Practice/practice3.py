@@ -67,7 +67,7 @@ df = pd.DataFrame({
      'FinalScore': [78, 94, 88, 91],
      'Grade': ['B', 'A', 'B', 'A']
 }, index=['S1', 'S2', 'S3', 'S4'])
-df.loc[df['Grade'] >= 90 ] = 'A+'
+df.loc[df['FinalScore'] >= 90 , 'Grade']   = 'A+'
 print(df)
 
 
@@ -75,39 +75,66 @@ print(df)
 # 문제 6: 필터링 기준 기존 컬럼 값 수정 
 # 아래 매장 재고 데이터에서 재고 수량('Stock')이 10개 미만인 상품의 'Status' 컬럼 값을
 # loc 조건식을 사용하여 기존 'Normal'에서 'Restock_Needed'로 일괄 변경하고 전체 결과를 출력하시오.
-# df = pd.DataFrame({
-#     'Item': ['Pen', 'Notebook', 'Eraser', 'Ruler'],
-#     'Stock': [25, 6, 40, 8],
-#     'Status': ['Normal', 'Normal', 'Normal', 'Normal']
-# }, index=['T1', 'T2', 'T3', 'T4'])
+df = pd.DataFrame({
+     'Item': ['Pen', 'Notebook', 'Eraser', 'Ruler'],
+     'Stock': [25, 6, 40, 8],
+     'Status': ['Normal', 'Normal', 'Normal', 'Normal']
+}, index=['T1', 'T2', 'T3', 'T4'])
+df.loc[ df['Stock'] < 10 , 'Status'] = 'Restock_Needed'
+print(df)
+
+
 
 # 문제 7: 필터링 기준 파생 컬럼 값 수정 
 # 아래 회원 실적 데이터에 기본값이 'General'인 'Membership' 컬럼을 추가한 뒤,
 # 'TotalSpent'가 300,000원 이상인 회원의 'Membership' 값을 loc 조건식을 사용하여 'VIP'로 변경하여 출력하시오.
-# df = pd.DataFrame({
-#     'Member': ['Kim', 'Lee', 'Park', 'Choi'],
-#     'TotalSpent': [150000, 320000, 450000, 210000]
-# }, index=['M1', 'M2', 'M3', 'M4'])
+df = pd.DataFrame({
+     'Member': ['Kim', 'Lee', 'Park', 'Choi'],
+     'TotalSpent': [150000, 320000, 450000, 210000]
+}, index=['M1', 'M2', 'M3', 'M4'])
+df['Membership'] = 'General'
+print(df)
+df.loc[ df['TotalSpent'] >= 300000 , 'Membership'] = 'VIP'
+print(df)
+
+
 
 # 문제 8: 컬럼명 변경 및 통계 집계
 # 아래 매장 판매 데이터의 컬럼명 'Units'를 '판매수량'으로, 'Discount'를 '할인율'로 rename을 사용해 변경한 뒤,
 # 변경된 '판매수량'의 총합(sum)과 'Grade' 컬럼의 고윳값별 빈도수(value_counts)를 각각 출력하시오.
-# df = pd.DataFrame({
-#     'Item': ['Pen', 'Notebook', 'Eraser', 'Ruler'],
-#     'Units': [120, 45, 80, 30],
-#     'Discount': [0.1, 0.05, 0.2, 0.0],
-#     'Grade': ['A', 'B', 'B', 'A']
-# })
+df = pd.DataFrame({
+    'Item': ['Pen', 'Notebook', 'Eraser', 'Ruler'],
+     'Units': [120, 45, 80, 30],
+     'Discount': [0.1, 0.05, 0.2, 0.0],
+     'Grade': ['A', 'B', 'B', 'A']
+})
+df = df.rename( columns={'Units' : '판매수량' , 'Discount' : '할인율'})
+print(df)
+print(df['판매수량'].sum())
+print(df['Grade'].value_counts())
+
+
 
 # 문제 9: 데이터 연결 (Concat)
 # 상반기 지점 실적(df_first)과 하반기 지점 실적(df_second)을 세로(행 방향, axis=0)로 연결하되,
 # 기존 인덱스를 무시하고 새롭게 0부터 번호를 매기는 방식(ignore_index=True)으로 연결하여 출력하시오.
-# df_first = pd.DataFrame({'Code': ['S10', 'S20'], 'Revenue': [500, 750]})
-# df_second = pd.DataFrame({'Code': ['S30', 'S40'], 'Revenue': [620, 890]})
+df_first = pd.DataFrame({'Code': ['S10', 'S20'], 'Revenue': [500, 750]})
+df_second = pd.DataFrame({'Code': ['S30', 'S40'], 'Revenue': [620, 890]})
+new_dp = pd.concat([df_first,df_second] , axis=0 , ignore_index=True)
+print(new_dp)
+
+
+
 
 # 문제 10: 데이터 병합 (Merge)
 # 회원 기본 프로필(df_user)과 최근 주문 내역(df_order)을 'UID' 기준으로 병합하되,
 # 양쪽 모두에 존재하는 주문 회원만 결합하는 방식(inner)과 전체 회원을 모두 유지하는 방식(outer)을
 # 각각 수행하여 결측치(NaN) 포함 여부를 비교 출력하시오.
-# df_user = pd.DataFrame({'UID': [101, 102, 103], 'User': ['James', 'Emma', 'Lucas']})
-# df_order = pd.DataFrame({'UID': [102, 103, 104], 'Amount': [15000, 32000, 21000]})
+df_user = pd.DataFrame({'UID': [101, 102, 103], 'User': ['James', 'Emma', 'Lucas']})
+df_order = pd.DataFrame({'UID': [102, 103, 104], 'Amount': [15000, 32000, 21000]})
+
+new_do = pd.merge( df_user,df_order , on = 'UID', how='inner')
+print(new_do)
+
+new_do = pd.merge( df_user,df_order , on = 'UID', how='outer')
+print(new_do)
