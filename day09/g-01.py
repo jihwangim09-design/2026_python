@@ -60,6 +60,28 @@ import numpy as np
 # 평균 170을 중심으로 표준편차 5 만큼 퍼져 있는 종모양(가우시안분포) 난수 1000개
 heights = np.random.normal(loc=170, scale=5, size=1000)
 
-# 1) 히스토그램 plt.hist( 값 , bins="구간개수" )
-plt.hist( heights , bins=30 )
+# 1) 히스토그램 plt.hist( 값 , bins="구간개수", edgecolor="테두리색상")
+plt.hist( heights , bins=30 , edgecolor="black" )
+plt.xlabel("키(cm)")
+plt.ylabel("빈도/분포 수")
+plt.show()
+
+
+# 5] 박스플롯( 분포 범위내 이상치 )
+heights = np.random.normal(loc=170, scale=5, size=1000)
+data_with_outliers = np.append(heights, [210, 215, 120])
+
+# 1) plt.boxplot(값) , 데이터들을 사분위수(25% 50% 75%) 표현
+plt.boxplot(data_with_outliers)
+plt.show()
+
+# 6] 한창에 2개 이상 그래프 표현
+# fig , axs = plt.subplot(행개수 ,열개수 , figsize = (가로,세로)) 
+fig , axs = plt.subplot( 1, 2 , figsize=(10,4)) # 1줄1(행) 차트2개
+# 1행1열 차트
+axs[0].plot( [1,2,3] , [4,5,6] )
+axs[0].set_title("서브1: 선그래프")
+# 1행2열 차트
+axs[1].bar( ['A' , 'B' , 'C'] , [30,15,40])
+axs[1].set_title("서브2: 막대그래프")
 plt.show()
