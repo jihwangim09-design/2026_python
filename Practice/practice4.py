@@ -1,3 +1,5 @@
+import pandas as pd
+df = pd.read_csv('./Practice/ecommerce_orders_cs_data.csv', encoding='utf-8-sig')
 # Python Pandas Practice4
 # 1. 데이터 준비 및 구조 (Columns) 
 # 링크: https://drive.google.com/file/d/1X22ll4NXhnCJp0tTYYqdRyCiS7VUAvUX/view?usp=sharing (다운로드)
@@ -16,20 +18,38 @@
 # [Step 1] 데이터 무결성 검증 및 기본 정제
 # - 중복된 주문 행을 제거하고, 연속된 번호로 인덱스를 재정렬(reset_index)하세요.
 # - 산술 연산 대상이 아닌 'Customer_ID' 컬럼의 타입을 문자열(str)로 변환하세요.
-
+df = df.drop_duplicates().reset_index(drop=True)
+df['Customer_ID'] = df['Customer_ID'].astype(str)
+print(df)
 # [Step 2] 텍스트 공백 정제 및 결측치 대체
 # - 'Category' 컬럼의 빈 문자열('')과 스페이스 공백('   ')을 결측치(None)로 일괄 치환하세요.
 # - 다음 기준에 따라 결측치를 대체하세요.
 #   * 'Category' 컬럼 : 가장 빈도가 높은 '최빈값(mode)'으로 대체
 #   * 'Price' 컬럼    : 이상치 영향을 최소화하기 위해 '중앙값(median)'으로 대체
+df['Category'] = df['Category'].str.strip().replace('', None)
+df['Category'] = df['Category'].fillna(df['Category'].mode()[0]) # mode()[0]: 최빈값 중 첫 번째 값 하나 꺼내기
+df['Price'] = df['Price'].fillna(df['Price'].median())
+print(df['Category'].isnull().sum())
+print(df['Price'].isnull().sum())
+print(df)
 
 # [Step 3] 이상치 보정 
 # - 주문 수량('Quantity') 컬럼에 포함된 비정상 데이터(-1, 999 등)를 정상 유효 범위인 1개 이상 10개 이하로 경계 조정(clip)하세요.
+df['Quantity'] = df['Quantity'].clip(lower=1 , upper=10)
+print(df['Quantity'].min(), df['Quantity'].max())
 
 # [Step 4] 비즈니스 파생변수 생성
 # - 'Price'와 'Quantity'를 곱하여 총 주문 금액인 'Total_Amount' 파생 컬럼을 생성하세요.
 # - 'Order_Date'를 날짜형(datetime)으로 변환한 뒤, 연도('Order_Year')와 월('Order_Month') 파생 컬럼을 각각 추출하세요.
 # - `mask` 메서드를 활용하여 'Total_Amount'가 300,000원 이상인 주문 건을 'VIP', 나머지를 'Normal'로 분류하는 'VIP_Flag' 파생 컬럼을 생성하세요.
+df['Total_Amount'] = df['Price'] * df['Quantity']
+df['Order_Date'] = pd.to_datetime(df['Order_Date'])
+df['Order_Year'] = df['Order_Date'].dt.year
+print(df['Order_Year'])
+df['Order_Month'] = df['Order_Date'].dt.month
+print(df['Order_Month'])
+df['VIP_Flag'] = 'Normal'
+df['VIP_Flag'] = df['VIP_Flag'].mask(df['Total_Amount']>=300000, 'VIP')
 
 # [Step 5] 집계 및 정렬 
 # - 카테고리('Category')별로 그룹화하여 다음 4가지 지표를 한 번에 다중 집계(agg)하세요.
@@ -37,17 +57,19 @@
 #   * 총매출   : 'Total_Amount'의 합계(sum)
 #   * 평균단가 : 'Price'의 평균(mean)
 # - 집계된 결과 테이블을 '총매출' 기준 내림차순(ascending=False)으로 정렬하여 출력하세요.
+new_df = df.groupby('Category').agg(
+    주문건수 = ('Order_ID' , 'count'),
+    총매출 = ('Total_Amount' , 'sum'),
+    평균단가 = ('Price' , 'mean')
+)
+new_df = new_df.sort_values( by = '총매출' , ascending=False)
+print(new_df)
+
 
 # [Step 6] One-Hot Encoding
 # - 머신러닝 모델 입력을 위해 명목형 범주 변수인 'Payment'와 'VIP_Flag'를 원-핫 인코딩(get_dummies)하세요.
 # - 단, 결과값이 True/False가 아닌 1과 0의 정수형(dtype=int)으로 생성되도록 옵션을 지정하세요.
+new_df = pd.get_dummies( df , columns=['Payment' , 'VIP_Flag'] , dtype=int)
+print(new_df)
 # ==============================================================================
-import pandas as pd
 
-# [기본 제공 코드] CSV 파일 로드 및 구조 확인
-df = pd.read_csv('./ecommerce_orders_cs_data.csv', encoding='utf-8-sig')
-
-print("--- [데이터 기본 구조 확인] ---")
-print(df.info())
-print("\n--- [상위 5건 데이터] ---")
-print(df.head())
