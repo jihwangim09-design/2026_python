@@ -18,15 +18,21 @@ url = "https://search.naver.com/search.naver?&query=안양날씨"
 # 2. requests 라이브러리 해당 주소 요청하기
 import requests              # URL 요청 라이브러리
 response = requests.get(url) # requests.get("요청할 주소")
-print(response.text) # <Response [200]> # HTTP CODE : 200 (통신 정상 뜻) # 요청한 주소의 HTML 문자로 반환
+print(response) # <Response [200]> # HTTP CODE : 200 (통신 정상 뜻)
+print(response.text) # 요청한 주소의 HTML 문자로 반환
+
 
 # 3. 요청 성공했으면 요청한 페이지의 HTML 파싱 하기
 from bs4 import BeautifulSoup # 요청된 URL의 HTML 파싱 라이브러리
-# BeautifulSoup( 요청한결과의내용물 ) , "html.parser"
+# BeautifulSoup( 요청한결과의내용물 , "html.parser" )
 soup = BeautifulSoup( response.text , "html.parser" ) # 요청한 URL 결과 문자열들을 HTML형식으로 변환
-print(soup)
+# print(soup)
 
 # 4. 파싱한 이유 : 특정한 식별자(마크업)의 텍스트/정보 추출
 # soup.select(선택자) : 여러 개 추출 # soup.select_one(선택자) : 한개 추출
-text = soup.select_one( ".temperature_text")
+text = soup.select_one( ".temperature_text > span")
 print(text)
+
+# 5. 마크업 사이의 텍스트 추출
+# 추출한DOM.get_text()
+print( text.get_text() )
