@@ -17,8 +17,10 @@ async def run() :
     await with async_playwright() as p : 
         # 2-2) 크로미움( 구글 회사 제공 하는 백그라운드용 오픈소스 브라우저 )
         # await p.chromim.lanuch( headless = True백그라운드모드 / False뷰모드 )
-    browser = await.chromium.lanuch(headless = True )
+    browser = await p.chromium.lanuch(headless = True )
     # 2-3) 현재 실행된 크로미움의 새로운 페이지(빈 페이지)열기
-    page = browser.new_page()
+    page = await browser.new_page()
     # 2-3) 빈 페이지에 특정한 URL 주소 대입/이동
     await page.goto( url )
+# *** asyncio.run( 동기화함수()) ***
+asyncio.run( run())
