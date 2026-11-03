@@ -1,7 +1,9 @@
-import asyncio
-from playwright.async_api import async_playwright 
+import asyncio # 비동기 라이브러리
+from playwright.async_api import async_playwright # 크롤링 라이브러리
 # Practice7 문제 [ 씨네21(Cine21) 영화 평점 및 핵심 정보 수집 ]
 # 출처 및 대상: 씨네21 영화 평점 페이지,  https://cine21.com/movie/point
+
+# 1. 동적페이지vs정적페이지
 
 # [1. 목표]
 # Playwright의 비동기 제어와 동적 페이지네이션(click)을 활용해 여러 페이지를 순회한다.
