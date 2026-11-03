@@ -20,13 +20,12 @@ def test1() :
     url += f"&serviceKey={service_key}"
     # 3] httpx 이용하여 통신하기
     # httpx.HTTP메소드명(통신할주소) , 통신 결과 반환
-    response = httpx.get(url)
-    print(response) # <Response [200 OK]> 성공했다는뜻
+    response = httpx.get(url)               # print(response) # <Response [200 OK]> 성공했다는뜻
     # 4] 응답 결과 JSON 변환 , .json()
     response_json = response.json() # print( response_json )
     # 5] 판다스에 저장하기 , import pandas as pd
     df = pd.DataFrame( response_json['data']) # { "currentCount" : 10 , "data" : [실질자료]}
-    df.info()
+    df.info() # 확인 
 
 
 
