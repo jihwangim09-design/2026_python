@@ -22,16 +22,35 @@ X_train , X_test , Y_train , Y_test = train_test_split( X , Y ,test_size=0.2 ,ra
 from sklearn.linear_model import LinearRegression
 model = LinearRegression()
 model.fit( X_train , Y_train )
+print( model.coef_ )
+print( model.intercept_ )
 
 # 4. 성능 평가 및 신규 데이터 예측
 #  - 테스트 세트(X_test)에 대한 예측값(Y_pred)을 생성하세요.
 #  - 실제값(Y_test)과 예측값(Y_pred)을 비교하여 R²(결정계수)와 RMSE(평균 제곱근 오차)를 산출하고 소수점 둘째 자리까지 출력하세요.
 #  - 만약 식사 총액이 $30, $100인 새로운 손님이 방문했을 때, 예상되는 팁 금액을 각각 예측하여 출력하세요.
-
-
+Y_pred = model.predict( X_test )
+import numpy as np
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
+rmse = np.sqrt( mean_squared_error( Y_test , Y_pred ) )
+r2 = r2_score( Y_test , Y_pred )
+print( "rmse: " , round( rmse , 2 ) )
+print( "r2: " , round( r2 , 2 ) )
+print( model.predict([[ 30 ]]) )
+print( model.predict([[ 100 ]]) )
 
 # 5. 결과 시각화 및 한계점 분석 
 #  - Matplotlib을 활용하여 아래 3가지 요소를 하나의 차트에 시각화하세요:
 #  1. 테스트 세트의 실제 데이터 산점도 (X_test vs Y_test)
 #  2. 식사비 $5부터 $100까지 모델이 예측한 선형 회귀선
 #  3. 식사비 $50일 때의 모델 예측 지점 (붉은 점으로 강조)
+import matplotlib.pyplot as plt
+plt.rc( 'font' , family = 'Malgun Gothic' )
+plt.scatter( X_test , Y_test ) 
+plt.plot( [5,100] , model.predict( [[5],[100]] ) ) 
+plt.scatter( [50] , model.predict([[ 50 ]]) , color="red" )
+plt.title("식사 총액별 팁")
+plt.xlabel("식사 총액")
+plt.ylabel("팁")
+plt.show()
