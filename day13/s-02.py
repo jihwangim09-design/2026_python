@@ -39,6 +39,16 @@ plt.show()
 X_test_ploy = np.column_stack( (X_test**2 , X_test) ) # 테스트용도 도 제곱항 추가
 Y_pred = model.predict( X_test_ploy )
 print( r2_score( Y_test , Y_pred ))
+# day12 : 단순 성형 회귀 결정계수 : 0.8199897860284712
+    # 직선 공식( !차 방정식 ) : Y = WX + B
+# day13 : 다항 선형 회귀 결정계수 : 0.8249869834428712
+    # 곡선 공식( 2차 방정식 ) : Y = (WX(제곱)) + (WX(원본)) + B
+
+
+
+
+
+
 
 
 
