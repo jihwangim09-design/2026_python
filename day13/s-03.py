@@ -57,3 +57,17 @@ print( 'r2 : ' , r2_score( Y_test , Y_pred)) # r2_score(정답지 , 예측값)
 # r2 : 0.07276663213888512
 # *] 모델 구현에서 다양한 속성값(degree = N ) 들을 테스트 하여 설계/구현 한다.
 # *] 특성이 너무 많아지면 훈련 데이터가 과하게 집학하여 과대적합이 발생하여 점수가 낮아진다.
+
+# 4] 특성이 많아짐에 따라 특성간의 단위 표준화( 0 ~ 1 )
+from sklearn.preprocessing import StandardScaler
+ss = StandardScaler() # 객체 생성
+ss.fit(X_train_poly) # 항이 추가된 특성으로 표준화
+X_train_scaled = ss.transform(X_train_poly)
+X_test_scaled = ss.transform(X_test_poly)
+print( X_train_poly[0] )
+# [ 16.2          4.5924       2.6316     262.44        74.39688
+#   42.63192     21.09013776  12.08535984   6.92531856]
+print( X_train_scaled[0] )
+# [-1.14878727 -1.06273398 -1.10441696 -0.94414637 -1.10959682 -1.06072372
+#  -0.91561258 -1.05610367 -1.02825083]
+
