@@ -87,7 +87,7 @@ for alpha in alpha_list :
     print( "Test R2: " , model.score(X_test_scaled , Y_test ) ) # alpha : 10 이 격차가 가장 적다.
 
 
- # 3) 라쏘 모델
+# 3) 라쏘 모델
 from sklearn.linear_model import Lasso
 lasso = Lasso( alpha=10 ) # 임의의 강도(alpha) 지정 라쏘 모델 객체 생성
 lasso.fit( X_train_scaled , Y_train )
@@ -97,3 +97,11 @@ print( lasso.score( X_test_scaled , Y_test )) # 0.9609557543588229
 import numpy as np
 zero_features = np.sum( lasso.coef_ == 0 )
 print('기울기가 0으로 제거된 특성 수 :' , zero_features ) # 기울기가 0으로 제거된 특성 수 : 6
+
+# 다항에서는 StandardScaler() 표준화 필수 
+# 특성이 적으면(과소적합/모델 단순) --> 항추가(PolynomialFeatures) / degree
+# 특성이 많으면(과대적합/모델 복잡) --> 규제( L1라쏘 , L2릿지) / alpha
+
+
+
+
