@@ -41,3 +41,19 @@ model.fit( X_train_poly , Y_train ) # 항이 추가된 특성으로 학습
 from sklearn.metrics import r2_score
 Y_pred = model.predict( X_test_poly ) # 테스트용 다항 특성으로 예측*
 print( 'r2 : ' , r2_score(Y_test , Y_pred) ) # r2_score( 정답지 , 예측값 ) 0.9719372415762594
+
+# 3] 다항의 차수 늘리기 , degree = 10 , (차수N) 제곱까지 하여 항 추가하기/생략시 2
+poly = PolynomialFeatures( include_bias=False , degree= 10 )
+poly.fit(X_train)
+X_train_poly2 = poly.transform( X_train )
+print( X_train_poly2.shape ) # 차수2 --> 차수10 증가에 따른 (127, 9) -> (127, 285)
+X_test_poly2 = poly.transform( X_test )
+# 학습 후 결정계수 확인
+model = LinearRegression()
+model.fit( X_train_poly2 , Y_train ) # 항이 추가된 특성으로 학습
+from sklearn.metrics import r2_score
+Y_pred = model.predict( X_test_poly2 ) # 테스트용 다항 특성으로 예측
+print( 'r2 : ' , r2_score( Y_test , Y_pred)) # r2_score(정답지 , 예측값)
+# r2 : 0.07276663213888512
+# *] 모델 구현에서 다양한 속성값(degree = N ) 들을 테스트 하여 설계/구현 한다.
+# *] 특성이 너무 많아지면 훈련 데이터가 과하게 집학하여 과대적합이 발생하여 점수가 낮아진다.
