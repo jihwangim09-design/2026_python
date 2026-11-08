@@ -39,7 +39,19 @@ X_test_scaled = ss.transform(X_test_poly)
 #    2) Ridge(alpha=1.0, random_state=42)
 #    3) Lasso(alpha=1.0, random_state=42)
 #  - 각 모델별 훈련 세트 R² 점수(Train R²)와 테스트 세트 R² 점수(Test R²)를 각각 산출하여 비교 출력하세요.
-from sklearn.linear_model
+from sklearn.linear_model import LinearRegression , Ridge , Lasso
+lr = LinearRegression()
+lr.fit( X_train_scaled , Y_train )
+ridge = Ridge( alpha= 1.0 , random_state= 42)
+ridge.fit(X_train_scaled , Y_train)
+lasso = Lasso( alpha= 1.0 , random_state= 42)
+lasso.fit(X_train_scaled , Y_train)
+print(lr.score( X_train_scaled , Y_train ) )
+print(lr.score( X_test_scaled , Y_test ))
+print(ridge.score( X_train_scaled , Y_train ))
+print(ridge.score( X_test_scaled , Y_test ))
+print(lasso.score(X_train_scaled, Y_train))
+print(lasso.score( X_test_scaled , Y_test ))
 
 
 # 5. 임의 대조군 데이터에 대한 3가지 모델 예측 비교
@@ -48,3 +60,12 @@ from sklearn.linear_model
 #    * 샘플 2 (하위권): study_hours=2, attendance=60, sleep_hours=5, internet_usage=9, assignments_completed=4, previous_score=50
 #  - 각 샘플 데이터를 앞서 학습시킨 동일한 변환기(PolynomialFeatures, StandardScaler)로 변환하세요.
 #  - 3가지 모델(LinearRegression, Ridge, Lasso)에 변환된 데이터를 각각 대입하여 예상 시험 성적을 산출하고 비교 출력하세요.
+sample = pd.DataFrame( [ [ 9 , 95 , 7 , 2 , 18 , 85 ] , [ 2 , 60 , 5 , 9 , 4 , 50 ] ] ,
+    columns = [ 'study_hours' , 'attendance' , 'sleep_hours' , 'internet_usage' , 'assignments_completed' , 'previous_score' ] )
+sample_poly = poly.transform( sample )
+sample_scaled = ss.transform( sample_poly )
+
+print( "LinearRegression 예측 (상위권, 하위권) :" , lr.predict( sample_scaled ) )
+print( "Ridge 예측 (상위권, 하위권) :" , ridge.predict( sample_scaled ) )
+print( "Lasso 예측 (상위권, 하위권) :" , lasso.predict( sample_scaled ) )
+
