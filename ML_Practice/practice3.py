@@ -69,4 +69,9 @@ model = joblib.load( './ML_Practice/best_student_performance_pipe.pkl')
 #   - 샘플 2 (하위권): study_hours=2, attendance=60, sleep_hours=5, internet_usage=9, assignments_completed=4, previous_score=50
 # - 복원된 파이프라인 객체의 .predict() 메서드에 원시 데이터프레임을 직접 전달하여 최종 예상 시험 점수를 산출하고 비교 출력하세요.
 
-sample1 = pd.DataFrame({"study_hours" : [9] , "attendance" : [95] , "sleep_hours" : [7] , "internet_usage" : [2] , "assignments_completed" : [18] , "previous_score" : 85 })
+sample1 = pd.DataFrame({"study_hours" : [9] , "attendance" : [95] , "sleep_hours" : [7] , "internet_usage" : [2] , "assignments_completed" : [18] , "previous_score" : [85] })
+sample2 = pd.DataFrame({"study_hours" : [2] , "attendance" : [60] , "sleep_hours" : [5] , "internet_usage" : [9] , "assignments_completed" : [4] , "previous_score" : [50] })
+predict1 = model.predict( sample1 )
+predict2 = model.predict( sample2 )
+print(predict1)
+print(predict2)
