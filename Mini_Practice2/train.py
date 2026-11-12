@@ -6,9 +6,7 @@
 import pandas as pd
 import joblib
 
-# =====================================================================================
 # [1] 데이터 로드 및 확인
-# =====================================================================================
 df = pd.read_csv( "./Mini_Practice2/insurance.csv" )
 print( df.head() )
 df.info()                       # 1338행, 결측치 없음
@@ -18,9 +16,7 @@ print( df.describe() )
 df = df.drop_duplicates()
 print( df.shape )
 
-# =====================================================================================
 # [2] 파생변수 생성 : obese_smoker (비만 이면서 흡연자)
-# =====================================================================================
 # 선형 모델은 각 특성의 효과를 '더하기'만 하므로
 # "흡연 + 비만이 동시에 있을 때만 보험료가 급증" 하는 패턴을 표현하지 못한다.
 # -> 두 조건을 하나의 특성(0/1)으로 직접 만들어 준다. (day08 mask 방식)
@@ -34,24 +30,19 @@ print( df.groupby( ['smoker', 'obese_smoker'] )['charges'].mean() )
 # yes     0               21363.22
 #         1               41557.99   <- 비만+흡연이면 한 번 더 크게 증가 (약 2배)
 
-# =====================================================================================
+
 # [3] 특성(X) / 타깃(Y) 분리
-# =====================================================================================
 X = df.drop( columns=['charges'] )   # 보험료 제외한 모든 열 (파생변수 포함)
 Y = df['charges']                    # 보험료
 
-# =====================================================================================
 # [4] 학습용 / 테스트용 분리 (회귀 모델이므로 stratify 사용 안 함)
-# =====================================================================================
 from sklearn.model_selection import train_test_split
 X_train, X_test, Y_train, Y_test = train_test_split(
     X, Y, test_size=0.2, random_state=42
 )
 print( X_train.shape, X_test.shape )
 
-# =====================================================================================
 # [5] ColumnTransformer : 수치형 / 범주형 복합 전처리
-# =====================================================================================
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 
@@ -65,9 +56,7 @@ pp = ColumnTransformer(
     ]
 )
 
-# =====================================================================================
 # [6] Pipeline + GridSearchCV : LinearRegression / Ridge / Lasso 비교
-# =====================================================================================
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.model_selection import KFold, GridSearchCV
@@ -111,9 +100,7 @@ best_model = best_grid.best_estimator_     # 최적의 추정기(파이프라인
 print( '선택된 모델 :', best_name, best_grid.best_params_ )
 # LinearRegression 0.844368 / Ridge 0.844369 / Lasso 0.844432 -> Lasso(alpha=10) 선택
 
-# =====================================================================================
 # [7] 테스트(검증) 데이터 기준 성능 평가 : 회귀 모델의 score() == R2
-# =====================================================================================
 train_r2 = best_model.score( X_train, Y_train )
 test_r2 = best_model.score( X_test, Y_test )
 print( '학습 R2 :', train_r2 )     # 약 0.8485
@@ -133,9 +120,7 @@ base_pipe.fit( X_train.drop( columns=['obese_smoker'] ), Y_train )
 base_r2 = base_pipe.score( X_test.drop( columns=['obese_smoker'] ), Y_test )
 print( '파생변수 적용 전 R2 :', base_r2, '-> 적용 후 R2 :', test_r2 )   # 약 0.8069 -> 0.9052
 
-# =====================================================================================
 # [8] 모델 및 성능 지표 저장 (joblib)
-# =====================================================================================
 joblib.dump( best_model, './Mini_Practice2/insurance_model.pkl' )
 
 metrics = {
@@ -149,9 +134,7 @@ metrics = {
 joblib.dump( metrics, './Mini_Practice2/insurance_metrics.pkl' )
 print( '저장 완료 :', metrics )
 
-# =====================================================================================
 # [9] 저장된 모델 불러와서 신규 데이터 예측 테스트
-# =====================================================================================
 loaded_model = joblib.load( './Mini_Practice2/insurance_model.pkl' )
 
 sample = pd.DataFrame( {
