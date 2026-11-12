@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>의료보험료 예측 AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- axios : 비동기 통신 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+  <style>
+    :root {
+      --bg: #f3f6f8;
+      --card: #ffffff;
+      --text: #1b2733;
+      --muted: #66788a;
+      --line: #e1e7ec;
+      --primary: #0f8b8d;
+      --primary-soft: #e3f4f4;
+      --accent: #f2994a;
+      --danger: #d64545;
+      --danger-soft: #fdecec;
+      --shadow: 0 6px 24px rgba(20, 40, 60, 0.07);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #11171d;
+        --card: #1a232b;
+        --text: #e6edf3;
+        --muted: #8fa1b3;
+        --line: #2a3640;
+        --primary: #2bb5b7;
+        --primary-soft: #16343a;
+        --accent: #f2a65a;
+        --danger: #ef6b6b;
+        --danger-soft: #3a1f22;
+        --shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 32px 16px 48px;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; }
+
+    /* 헤더 */
+    header { margin-bottom: 24px; }
+    header .tag {
+      display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .5px;
+      color: var(--primary); background: var(--primary-soft);
+      padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+    }
+    header h1 { font-size: 28px; font-weight: 900; }
+    header p { color: var(--muted); margin-top: 4px; }
+
+    /* 레이아웃 */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+      padding: 24px; box-shadow: var(--shadow);
+    }
+    .card h2 { font-size: 17px; font-weight: 700; margin-bottom: 18px; }
+
+    /* 폼 */
+    .field { margin-bottom: 16px; }
+    .field > label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    input[type=number], select {
+      width: 100%; padding: 11px 12px; font-size: 15px; font-family: inherit;
+      color: var(--text); background: var(--bg);
+      border: 1px solid var(--line); border-radius: 10px; outline: none;
+    }
+    input[type=number]:focus, select:focus { border-color: var(--primary); }
+
+    /* 라디오 버튼 -> 토글 버튼 형태 */
+    .seg { display: flex; gap: 8px; }
+    .seg input { display: none; }
+    .seg label {
+      flex: 1; text-align: center; padding: 10px 0; font-size: 14px; cursor: pointer;
+      border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
+      color: var(--muted); transition: .15s;
+    }
+    .seg input:checked + label {
+      border-color: var(--primary); background: var(--primary-soft);
+      color: var(--primary); font-weight: 700;
+    }
+    .seg.smoke input:checked + label.yes {
+      border-color: var(--danger); background: var(--danger-soft); color: var(--danger);
+    }
+    .bmi-badge { font-weight: 700; }
+
+    button.submit {
+      width: 100%; padding: 14px; margin-top: 6px; font-size: 16px; font-weight: 700;
+      font-family: inherit; color: #fff; background: var(--primary);
+      border: none; border-radius: 12px; cursor: pointer; transition: .15s;
+    }
+    button.submit:hover { filter: brightness(1.08); }
+    button.submit:disabled { opacity: .6; cursor: wait; }
+
+    /* 결과 */
+    .empty { color: var(--muted); text-align: center; padding: 60px 0; }
+    .empty .icon { font-size: 40px; margin-bottom: 8px; }
+    .price-label { font-size: 14px; color: var(--muted); }
+    .price { font-size: 44px; font-weight: 900; color: var(--primary); line-height: 1.2; margin: 4px 0; }
+    .price-krw { font-size: 15px; color: var(--muted); }
+    .risk {
+      margin-top: 16px; padding: 12px 14px; border-radius: 10px; font-size: 14px;
+      background: var(--danger-soft); color: var(--danger); font-weight: 500;
+    }
+    .risk.safe { background: var(--primary-soft); color: var(--primary); }
+    .summary { margin-top: 16px; font-size: 13px; color: var(--muted); }
+
+    .metric { margin-top: 20px; padding-top: 18px; border-top: 1px dashed var(--line); }
+    .metric-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .metric-head span { font-size: 14px; color: var(--muted); }
+    .metric-head b { font-size: 22px; }
+    .bar { height: 10px; background: var(--line); border-radius: 999px; overflow: hidden; }
+    .bar > div { height: 100%; width: 0; background: var(--primary); border-radius: 999px; transition: width .8s ease; }
+    .bar.base > div { background: var(--muted); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .chip {
+      font-size: 12px; padding: 4px 10px; border-radius: 999px;
+      background: var(--bg); border: 1px solid var(--line); color: var(--muted);
+    }
+
+    /* 모델 정보 */
+    .model-info { margin-top: 20px; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .compare-row { margin-bottom: 14px; }
+    .compare-row .metric-head b { font-size: 16px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 500; font-size: 13px; }
+    tr.best td { color: var(--primary); font-weight: 700; }
+    .error { margin-top: 12px; color: var(--danger); font-size: 14px; }
+
+    @media (max-width: 760px) {
+      .grid, .info-grid { grid-template-columns: 1fr; }
+      header h1 { font-size: 23px; }
+      .price { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="tag">MACHINE LEARNING · REGRESSION</span>
+      <h1>🏥 의료보험료 예측 AI</h1>
+      <p>개인 정보를 입력하면 학습된 회귀 모델이 연간 의료보험료를 예측합니다.</p>
+    </header>
+
+    <div class="grid">
+      <!-- ========== 입력 폼 ========== -->
+      <form class="card" id="predictForm">
+        <h2>📝 정보 입력</h2>
+
+        <div class="row">
+          <div class="field">
+            <label for="age">나이</label>
+            <input type="number" id="age" min="18" max="64" value="30" required>
+            <div class="hint">학습 데이터 범위 18~64세</div>
+          </div>
+          <div class="field">
+            <label for="children">자녀 수</label>
+            <input type="number" id="children" min="0" max="5" value="0" required>
+            <div class="hint">0~5명</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="bmi">BMI (체질량지수)</label>
+          <input type="number" id="bmi" min="15" max="55" step="0.1" value="25.0" required>
+          <div class="hint">현재 : <span class="bmi-badge" id="bmiLabel">-</span> · BMI = 몸무게(kg) ÷ 키(m)²</div>
+        </div>
+
+        <div class="field">
+          <label>성별</label>
+          <div class="seg">
+            <input type="radio" name="sex" id="sexM" value="male" checked><label for="sexM">남성</label>
+            <input type="radio" name="sex" id="sexF" value="female"><label for="sexF">여성</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>흡연 여부</label>
+          <div class="seg smoke">
+            <input type="radio" name="smoker" id="smokeN" value="no" checked><label for="smokeN">비흡연</label>
+            <input type="radio" name="smoker" id="smokeY" value="yes"><label for="smokeY" class="yes">흡연</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="region">거주 지역 (미국)</label>
+          <select id="region">
+            <option value="northeast">북동부 (Northeast)</option>
+            <option value="northwest">북서부 (Northwest)</option>
+            <option value="southeast" selected>남동부 (Southeast)</option>
+            <option value="southwest">남서부 (Southwest)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit" id="submitBtn">예측하기</button>
+        <div class="error" id="errorBox"></div>
+      </form>
+
+      <!-- ========== 예측 결과 ========== -->
+      <div class="card" id="resultCard">
+        <h2>📊 예측 결과</h2>
+        <div class="empty" id="emptyBox">
+          <div class="icon">🔍</div>
+          정보를 입력하고 <b>예측하기</b>를 눌러주세요.
+        </div>
+
+        <div id="resultBox" style="display:none">
+          <div class="price-label">예상 연간 의료보험료</div>
+          <div class="price" id="price">$0</div>
+          <div class="price-krw" id="priceKrw"></div>
+
+          <div class="risk" id="riskBox"></div>
+          <div class="summary" id="summary"></div>
+
+          <div class="metric">
+            <div class="metric-head">
+              <span>모델 성능 · 결정계수 R² (테스트 데이터)</span>
+              <b id="r2">-</b>
+            </div>
+            <div class="bar"><div id="r2Bar"></div></div>
+            <div class="chips">
+              <span class="chip" id="modelChip">모델 -</span>
+              <span class="chip" id="paramChip">파라미터 -</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 모델 정보 (페이지 로드 시 /api/metrics) ========== -->
+    <div class="card model-info">
+      <h2>🧠 모델 정보</h2>
+      <div class="info-grid">
+        <div>
+          <div class="compare-row">
+            <div class="metric-head"><span>파생변수 적용 전 R²</span><b id="baseR2">-</b></div>
+            <div class="bar base"><div id="baseBar"></div></div>
+          </div>
+          <div class="compare-row">
+            <div class="metric-head"><span>파생변수 적용 후 R² (obese_smoker)</span><b id="finalR2">-</b></div>
+            <div class="bar"><div id="finalBar"></div></div>
+          </div>
+          <p class="hint" style="font-size:13px;color:var(--muted)">
+            파생변수 <b>obese_smoker</b> = BMI 30 이상 &amp; 흡연자이면 1, 아니면 0<br>
+            비만과 흡연이 겹칠 때 보험료가 급증하는 패턴을 선형 모델이 학습할 수 있도록 추가했습니다.
+          </p>
+        </div>
+        <div>
+          <table>
+            <thead><tr><th>모델</th><th>최적 파라미터</th><th>교차검증 R²</th></tr></thead>
+            <tbody id="compareBody"><tr><td colspan="3">불러오는 중...</td></tr></tbody>
+          </table>
+          <p class="hint" style="font-size:13px;color:var(--muted);margin-top:8px">
+            GridSearchCV (KFold 5) 로 3개 모델을 비교하여 교차검증 R²가 가장 높은 모델을 선택했습니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const KRW_RATE = 1400;   // 원화 환산용 환율 (참고용 고정값)
+    const regionName = { northeast: '북동부', northwest: '북서부', southeast: '남동부', southwest: '남서부' };
+
+    // ---------- BMI 구간 표시 ----------
+    const bmiInput = document.querySelector('#bmi');
+    const bmiLabel = document.querySelector('#bmiLabel');
+    function updateBmiLabel() {
+      const v = Number(bmiInput.value);
+      let text = '정상', color = 'var(--primary)';
+      if (!v)          { text = '-'; }
+      else if (v < 18.5) { text = '저체중'; color = 'var(--muted)'; }
+      else if (v < 25)   { text = '정상'; }
+      else if (v < 30)   { text = '과체중'; color = 'var(--accent)'; }
+      else               { text = '비만 (30 이상)'; color = 'var(--danger)'; }
+      bmiLabel.textContent = text;
+      bmiLabel.style.color = color;
+    }
+    bmiInput.addEventListener('input', updateBmiLabel);
+    updateBmiLabel();
+
+    // ---------- 예측 요청 ----------
+    const form = document.querySelector('#predictForm');
+    const submitBtn = document.querySelector('#submitBtn');
+    const errorBox = document.querySelector('#errorBox');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();               // 폼 기본 제출(새로고침) 막기
+      errorBox.textContent = '';
+
+      // 1) 입력값 -> 모델 입력 규격(JSON)
+      const data = {
+        age: Number(document.querySelector('#age').value),
+        sex: document.querySelector('input[name=sex]:checked').value,
+        bmi: Number(document.querySelector('#bmi').value),
+        children: Number(document.querySelector('#children').value),
+        smoker: document.querySelector('input[name=smoker]:checked').value,
+        region: document.querySelector('#region').value
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '예측 중...';
+      try {
+        // 2) axios 비동기 통신 -> FastAPI
+        const response = await axios.post('/api/predict', data);
+        renderResult(data, response.data);
+      } catch (err) {
+        const detail = err.response && err.response.data && err.response.data.detail;
+        errorBox.textContent = '예측 실패 : ' + (detail || err.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '예측하기';
+      }
+    });
+
+    // ---------- 결과 렌더링 ----------
+    function renderResult(input, result) {
+      document.querySelector('#emptyBox').style.display = 'none';
+      document.querySelector('#resultBox').style.display = 'block';
+
+      // 예측값
+      const usd = result.prediction;
+      document.querySelector('#price').textContent =
+        '$' + usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.querySelector('#priceKrw').textContent =
+        '≈ ' + Math.round(usd * KRW_RATE).toLocaleString('ko-KR') + '원 (환율 ' + KRW_RATE.toLocaleString() + '원 기준)';
+
+      // 위험군 안내
+      const riskBox = document.querySelector('#riskBox');
+      if (result.obese_smoker === 1) {
+        riskBox.className = 'risk';
+        riskBox.textContent = '⚠ 비만(BMI 30 이상) + 흡연 위험군으로 분류되어 보험료가 크게 증가했습니다.';
+      } else if (input.smoker === 'yes') {
+        riskBox.className = 'risk';
+        riskBox.textContent = '⚠ 흡연자는 비흡연자보다 보험료가 크게 높게 예측됩니다.';
+      } else {
+        riskBox.className = 'risk safe';
+        riskBox.textContent = '✅ 비흡연자로 보험료 증가 위험 요인이 적습니다.';
+      }
+
+      document.querySelector('#summary').textContent =
+        `입력 : ${input.age}세 · ${input.sex === 'male' ? '남성' : '여성'} · BMI ${input.bmi} · 자녀 ${input.children}명 · ` +
+        `${input.smoker === 'yes' ? '흡연' : '비흡연'} · ${regionName[input.region]}`;
+
+      // 성능 지표
+      document.querySelector('#r2').textContent = result.r2.toFixed(4);
+      document.querySelector('#r2Bar').style.width = '0';
+      setTimeout(() => { document.querySelector('#r2Bar').style.width = (result.r2 * 100) + '%'; }, 50);
+      document.querySelector('#modelChip').textContent = '모델 ' + result.model_name;
+      document.querySelector('#paramChip').textContent = '파라미터 ' + formatParams(result.best_params);
+    }
+
+    function formatParams(params) {
+      const keys = Object.keys(params);
+      if (keys.length === 0) return '없음';
+      return keys.map(k => k.replace('model__', '') + '=' + params[k]).join(', ');
+    }
+
+    // ---------- 페이지 로드 시 모델 정보 ----------
+    async function loadMetrics() {
+      try {
+        const { data } = await axios.get('/api/metrics');
+        document.querySelector('#baseR2').textContent = data.base_r2.toFixed(4);
+        document.querySelector('#finalR2').textContent = data.r2.toFixed(4);
+        setTimeout(() => {
+          document.querySelector('#baseBar').style.width = (data.base_r2 * 100) + '%';
+          document.querySelector('#finalBar').style.width = (data.r2 * 100) + '%';
+        }, 50);
+
+        document.querySelector('#compareBody').innerHTML = data.comparison.map(m => `
+          <tr class="${m.model_name === data.model_name ? 'best' : ''}">
+            <td>${m.model_name}${m.model_name === data.model_name ? ' ✔' : ''}</td>
+            <td>${formatParams(m.best_params)}</td>
+            <td>${m.cv_r2.toFixed(6)}</td>
+          </tr>`).join('');
+      } catch (err) {
+        document.querySelector('#compareBody').innerHTML = '<tr><td colspan="3">모델 정보를 불러오지 못했습니다.</td></tr>';
+      }
+    }
+    loadMetrics();
+  </script>
+</body>
+</html>
